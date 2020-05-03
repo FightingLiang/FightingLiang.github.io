@@ -129,6 +129,60 @@
     
     
     <div class="col-12 col-md-8 m-auto">
+      <a href="/2020/05/02/JS%20%E6%B5%AE%E7%82%B9%E6%95%B0%E7%9B%B8%E5%8A%A0%E5%87%BA%E7%8E%B0%E7%B2%BE%E5%BA%A6%E4%B8%8D%E5%87%86%E7%A1%AE%E9%97%AE%E9%A2%98/">
+        <p class="h4 index-header">JS 浮点数相加出现精度不准确问题</p>
+        
+        
+          
+        
+        <div class="index-excerpt" >
+          <div class="index-text mb-1">JS 浮点数相加出现精度不准确问题场景还原：最近在做公司的一个点餐项目时，遇到添加商品计算总价的需求，自然而然的用最原始的方法实现。但当我计算到6 + 0.01 + 0.01 + 0.02 时，居然不等于6.04。一开始及其懵逼反复检查了自己的逻辑代码，发现都没问题。最后只能找度娘，发现原来这是js 本身的问题， 由于存在二进制和十进制的转换问题，具体的位数会发生变化 。我默默打开浏览器控制台，验证一下，果不其然，下面的浏览器控制台的打印结果：
+对于这个问题，有两个解决办法：1，toFixed()  2，自定义方法转换
+方案一：toFixed()将每次相加的和用toFixed()这个方法转一下，就可以得到保留两位小数的浮点数。这个方法比较简单，适合用于精度要求不高的场景
+方案二：自定义函数先贴代码：
+1234567891011121314151617getSum:function (num1, num2) &#123;    let sq1 = 0    let sq2 = 0    let m = 0    try &#123;    	sq1 = num1.toString().s</div>
+        </div>
+      </a>
+
+      <div>
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2020-05-02&nbsp;&nbsp;
+        
+        
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mb-4 mx-auto">
+    
+    
+    <div class="col-12 col-md-8 m-auto">
+      <a href="/2019/10/27/vue%E9%A1%B9%E7%9B%AE%E4%B8%AD%EF%BC%8C%E7%99%BE%E5%BA%A6%E5%AF%8C%E6%96%87%E6%9C%AC%E7%BC%96%E8%BE%91%E5%99%A8%E7%9A%84%E4%BD%BF%E7%94%A8/">
+        <p class="h4 index-header">vue项目中，百度富文本编辑器的使用</p>
+        
+        
+          
+        
+        <div class="index-excerpt" >
+          <div class="index-text mb-1">首先下载百度编辑器文件，这是地址，下载解压就可以，傻瓜式安装</div>
+        </div>
+      </a>
+
+      <div>
+        
+          <i class="iconfont icon-riqi2"></i>&nbsp;2019-10-27&nbsp;&nbsp;
+        
+        
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mb-4 mx-auto">
+    
+    
+    <div class="col-12 col-md-8 m-auto">
       <a href="/2019/10/19/hello-world/">
         <p class="h4 index-header">Hello World</p>
         

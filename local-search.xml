@@ -4,6 +4,32 @@
   
   
   <entry>
+    <title>JS 浮点数相加出现精度不准确问题</title>
+    <link href="undefined2020/05/02/JS%20%E6%B5%AE%E7%82%B9%E6%95%B0%E7%9B%B8%E5%8A%A0%E5%87%BA%E7%8E%B0%E7%B2%BE%E5%BA%A6%E4%B8%8D%E5%87%86%E7%A1%AE%E9%97%AE%E9%A2%98/"/>
+    <url>2020/05/02/JS%20%E6%B5%AE%E7%82%B9%E6%95%B0%E7%9B%B8%E5%8A%A0%E5%87%BA%E7%8E%B0%E7%B2%BE%E5%BA%A6%E4%B8%8D%E5%87%86%E7%A1%AE%E9%97%AE%E9%A2%98/</url>
+    
+    <content type="html"><![CDATA[<h1 id="JS-浮点数相加出现精度不准确问题"><a href="#JS-浮点数相加出现精度不准确问题" class="headerlink" title="JS 浮点数相加出现精度不准确问题"></a>JS 浮点数相加出现精度不准确问题</h1><p>场景还原：最近在做公司的一个点餐项目时，遇到添加商品计算总价的需求，自然而然的用最原始的方法实现。但当我计算到6 + 0.01 + 0.01 + 0.02 时，居然不等于6.04。一开始及其懵逼反复检查了自己的逻辑代码，发现都没问题。最后只能找度娘，发现原来这是js 本身的问题， 由于存在二进制和十进制的转换问题，具体的位数会发生变化 。我默默打开浏览器控制台，验证一下，果不其然，下面的浏览器控制台的打印结果：<br><img src="https://cdn.jsdelivr.net/gh/FightingLiang/blogImg/img/pic1.png" srcset="/img/loading.gif" alt="Image text"></p><p>对于这个问题，有两个解决办法：1，toFixed()  2，自定义方法转换</p><h3 id="方案一：toFixed"><a href="#方案一：toFixed" class="headerlink" title="方案一：toFixed()"></a>方案一：toFixed()</h3><p>将每次相加的和用<a href="https://www.w3school.com.cn/js/jsref_tofixed.asp" target="_blank" rel="noopener">toFixed()</a>这个方法转一下，就可以得到保留两位小数的浮点数。这个方法比较简单，适合用于精度要求不高的场景</p><h3 id="方案二：自定义函数"><a href="#方案二：自定义函数" class="headerlink" title="方案二：自定义函数"></a>方案二：自定义函数</h3><p>先贴代码：</p><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">getSum:<span class="function"><span class="keyword">function</span> (<span class="params">num1, num2</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> sq1 = <span class="number">0</span></span><br><span class="line">    <span class="keyword">let</span> sq2 = <span class="number">0</span></span><br><span class="line">    <span class="keyword">let</span> m = <span class="number">0</span></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">    sq1 = num1.toString().split(<span class="string">'.'</span>)[<span class="number">1</span>].length</span><br><span class="line">    &#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">    sq1 = <span class="number">0</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">    sq2 = num2.toString().split(<span class="string">'.'</span>)[<span class="number">1</span>].length</span><br><span class="line">    &#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">    sq2 = <span class="number">0</span></span><br><span class="line">    &#125;</span><br><span class="line">    m = <span class="built_in">Math</span>.pow(<span class="number">10</span>, <span class="built_in">Math</span>.max(sq1, sq2))</span><br><span class="line">    <span class="keyword">return</span> (num1 * m + num2 * m) / m</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>注意：<a href="https://www.w3school.com.cn/jsref/jsref_pow.asp" target="_blank" rel="noopener">Math.pow</a>，<a href="https://www.w3school.com.cn/jsref/jsref_max.asp" target="_blank" rel="noopener">Math.max</a>，可以先了解一下js的这个内置方法，在这里就不多阐述了</p><p>思路：这个方法的逻辑就是传入两个要求和的数字（前提必须是数字），首先假设传入的是小数，通过toString().split(‘.’)[1].length，将小数转为字符串然后以（‘ . ’）切割字符串并且取到后半部分的长度，所以sq1，sq2分别取到的是两个小数的小数位数。Math.max(sq1, sq2)得到最大的小数位数，Math.pow(10, Math.max(sq1, sq2))得到10的最大小数位数幂。</p><p>总结：把需要计算的数字乘以 10 的 n 次幂，换算成计算机能够精确识别的整数，然后再除以 10 的 n 次幂，这样就能得到精度准确的小数</p>]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>vue项目中，百度富文本编辑器的使用</title>
+    <link href="undefined2019/10/27/vue%E9%A1%B9%E7%9B%AE%E4%B8%AD%EF%BC%8C%E7%99%BE%E5%BA%A6%E5%AF%8C%E6%96%87%E6%9C%AC%E7%BC%96%E8%BE%91%E5%99%A8%E7%9A%84%E4%BD%BF%E7%94%A8/"/>
+    <url>2019/10/27/vue%E9%A1%B9%E7%9B%AE%E4%B8%AD%EF%BC%8C%E7%99%BE%E5%BA%A6%E5%AF%8C%E6%96%87%E6%9C%AC%E7%BC%96%E8%BE%91%E5%99%A8%E7%9A%84%E4%BD%BF%E7%94%A8/</url>
+    
+    <content type="html"><![CDATA[<h2 id="首先下载百度编辑器文件，这是地址，下载解压就可以，傻瓜式安装"><a href="#首先下载百度编辑器文件，这是地址，下载解压就可以，傻瓜式安装" class="headerlink" title="首先下载百度编辑器文件，这是地址，下载解压就可以，傻瓜式安装"></a>首先下载百度编辑器文件，<a href="http://ueditor.baidu.com/website/" target="_blank" rel="noopener">这是地址</a>，下载解压就可以，傻瓜式安装</h2>]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>Hello World</title>
     <link href="undefined2019/10/19/hello-world/"/>
     <url>2019/10/19/hello-world/</url>
